@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const TodoForm = () => {
 	const [todo, setTodo] = useState("");
@@ -16,6 +16,18 @@ const TodoForm = () => {
 		setTodos((prevArray) => [todo, ...prevArray]);
 		setTodo("");
 	};
+
+	useEffect(() => {
+		const saved = localStorage.getItem("todos");
+
+		if (saved) {
+			setTodos(JSON.parse(saved));
+		}
+	}, []);
+
+	useEffect(() => {
+		localStorage.setItem("todos", JSON.stringify(todos));
+	}, [todos]);
 
 	return (
 		<div>
