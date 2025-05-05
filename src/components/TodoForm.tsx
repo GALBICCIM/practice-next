@@ -1,20 +1,26 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { TodoType } from "@/types/Todo.type";
+import * as Style from "@/styles/todo.styled";
 
 const TodoForm = () => {
 	const [todo, setTodo] = useState("");
-	const [todos, setTodos] = useState<string[]>([]);
+	const [todos, setTodos] = useState<TodoType[]>([]);
 
 	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => setTodo(event.target.value);
 
 	const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (todo === "") return;
+		if (todo.trim() === "") return;
 
-		setTodos((prevArray) => [todo, ...prevArray]);
+		setTodos((prevArray) => [{ id: Date.now(), text: todo }, ...prevArray]);
 		setTodo("");
+	};
+
+	const deleteTodo = (id: number) => {
+		setTodos(todos.filter((todo) => todo.id !== id));
 	};
 
 	useEffect(() => {
@@ -36,11 +42,14 @@ const TodoForm = () => {
 				<button>추가</button>
 			</form>
 
-			<ul>
-				{todos.map((item, index) => (
-					<li key={index}>{item}</li>
+			<Style.Ul>
+				{todos.map((item) => (
+					<Style.Li key={item.id}>
+						{item.text}
+						<button onClick={() => deleteTodo(item.id)}>삭제</button>
+					</Style.Li>
 				))}
-			</ul>
+			</Style.Ul>
 		</div>
 	);
 };
